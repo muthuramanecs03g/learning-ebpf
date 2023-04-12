@@ -8,10 +8,10 @@ all: $(TARGET) $(BPF_OBJ)
 .PHONY: $(TARGET)
 
 $(TARGET): $(BPF_OBJ)
-	bpftool net detach xdp dev lo
-	rm -f /sys/fs/bpf/$(TARGET)
-	bpftool prog load $(BPF_OBJ) /sys/fs/bpf/$(TARGET)
-	bpftool net attach xdp pinned /sys/fs/bpf/$(TARGET) dev lo
+	sudo bpftool net detach xdp dev lo
+	sudo rm -f /sys/fs/bpf/$(TARGET)
+	sudo bpftool prog load $(BPF_OBJ) /sys/fs/bpf/$(TARGET)
+	sudo bpftool net attach xdp pinned /sys/fs/bpf/$(TARGET) dev lo
 
 $(BPF_OBJ): %.o: %.c vmlinux.h
 	clang \
@@ -22,12 +22,12 @@ $(BPF_OBJ): %.o: %.c vmlinux.h
 	    -O2 -o $@ -c $<
 
 vmlinux.h:
-	bpftool btf dump file /sys/kernel/btf/vmlinux format c > vmlinux.h		
+	sudo bpftool btf dump file /sys/kernel/btf/vmlinux format c > vmlinux.h		
 
 clean:
-	- bpftool net detach xdp dev lo
-	- bpftool net detach xdp dev docker0
-	- rm -f /sys/fs/bpf/$(TARGET)
-	- rm $(BPF_OBJ)
-	- tc filter delete dev docker0 parent ffff:
+	- sudo bpftool net detach xdp dev lo
+	#- sudo bpftool net detach xdp dev docker0
+	- sudo rm -f /sys/fs/bpf/$(TARGET)
+	- sudo rm -f $(BPF_OBJ)
+	#- sudo tc filter delete dev docker0 parent ffff:
 

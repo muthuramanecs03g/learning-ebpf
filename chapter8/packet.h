@@ -1,3 +1,7 @@
+#include <linux/bpf.h>
+#include <linux/if_ether.h>
+#include <linux/ip.h>
+
 #define TC_ACT_UNSPEC       (-1)
 #define TC_ACT_OK		    0
 #define TC_ACT_RECLASSIFY	1
@@ -17,8 +21,8 @@
 #define ICMP_CSUM_SIZE sizeof(__u16)
 
 // Returns the protocol byte for an IP packet, 0 for anything else
-// static __always_inline unsigned char lookup_protocol(struct xdp_md *ctx)
-unsigned char lookup_protocol(struct xdp_md *ctx)
+static __always_inline unsigned char lookup_protocol(struct xdp_md *ctx)
+//unsigned char lookup_protocol(struct xdp_md *ctx)
 {
     unsigned char protocol = 0;
 
